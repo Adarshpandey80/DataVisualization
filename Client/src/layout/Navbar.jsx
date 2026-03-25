@@ -24,7 +24,7 @@ const Navbar = () => {
           </button>
 
        <h1 className="text-xl font-semibold text-gray-800 dark:text-white tracking-wide">
-          📊 Blackcoffer Analytics
+          📊 Data Visualization 
         </h1>
         </div>
 
