@@ -14,10 +14,10 @@ export default function Dashboard() {
       <Sidebar />
 
       <div className="flex-1 flex flex-col overflow-hidden">
-        <main className="flex-1 p-6 overflow-auto space-y-8 overflow-x-hidden">
+        <main className="flex-1 p-6 overflow-auto space-y-5 overflow-x-hidden">
 
           {/* KPI SECTION */}
-          <section className="min-h-[20vh]">
+          <section>
             <KPISection />
           </section>
 

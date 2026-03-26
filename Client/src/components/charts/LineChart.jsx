@@ -34,7 +34,7 @@ export default function LineChart() {
   }, [modalSize, open]);
 
   const draw = (ref, w, h) => {
-    const margin = { top: 30, right: 30, bottom: 50, left: 60 };
+    const margin = { top: 18, right: 24, bottom: 42, left: 54 };
     const svg = d3.select(ref.current).select("svg")
       .attr("width", w)
       .attr("height", h);

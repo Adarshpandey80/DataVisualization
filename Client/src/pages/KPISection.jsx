@@ -23,7 +23,7 @@ export default function KPISection() {
   ];
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-5 mb-6">
+    <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-5 mb-0">
       {cards.map((c, i) => (
         <motion.div
           key={i}
