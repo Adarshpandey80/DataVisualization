@@ -1,23 +1,23 @@
 const Footer = () => {
   return (
-    <footer className="w-full bg-white dark:bg-[#0f172a] border-t border-gray-200 dark:border-gray-700 px-4 md:px-6 py-3">
-      <div className="flex flex-col md:flex-row items-center justify-between gap-2 text-sm text-gray-600 dark:text-gray-400">
+    <footer className="w-full border-t border-white/10 bg-slate-950/60 px-4 py-3 backdrop-blur-xl md:px-6">
+      <div className="flex flex-col items-center justify-between gap-2 text-sm text-slate-400 md:flex-row">
 
         <div>
           © {new Date().getFullYear()}{" "}
-          <span className="font-semibold text-gray-800 dark:text-white">
+          <span className="font-semibold text-slate-100">
             Blackcoffer Analytics
           </span>
         </div>
 
         <div className="flex items-center gap-4">
-          <a href="#" className="hover:text-indigo-600 transition">
+          <a href="#" className="transition hover:text-cyan-300">
             Privacy
           </a>
-          <a href="#" className="hover:text-indigo-600 transition">
+          <a href="#" className="transition hover:text-cyan-300">
             Terms
           </a>
-          <a href="#" className="hover:text-indigo-600 transition">
+          <a href="#" className="transition hover:text-cyan-300">
             Support
           </a>
         </div>

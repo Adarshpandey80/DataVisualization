@@ -1,21 +1,22 @@
 import { motion } from "framer-motion";
+import { usePreferences } from "../context/PreferencesContext";
 
 export default function ChartCard({ title, action, children }) {
+  const { settings } = usePreferences();
+
   return (
     <motion.div
-      whileHover={{ scale: 1.01 }}
-      transition={{ type: "spring", stiffness: 120 }}
-      className="relative bg-gray-900 rounded-xl shadow-2xl border border-white/10 backdrop-blur-xl overflow-hidden flex flex-col h-full min-h-full"
+      whileHover={settings.animations ? { scale: 1.01 } : undefined}
+      transition={settings.animations ? { type: "spring", stiffness: 120 } : undefined}
+      className="relative flex h-full min-h-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-slate-900/75 shadow-2xl backdrop-blur-xl"
     >
-      {/* Header */}
-      <div className="flex justify-between items-center px-4 py-3 border-b border-white/10 shrink-0">
-        <h3 className="text-cyan-300 font-semibold tracking-wide text-sm">
+      <div className="flex shrink-0 items-center justify-between border-b border-white/10 px-4 py-3">
+        <h3 className="text-sm font-semibold tracking-wide text-cyan-300">
           {title}
         </h3>
         {action}
       </div>
 
-      {/* Chart container */}
       <div className="flex-1 min-h-0 p-4">
         {children}
       </div>
