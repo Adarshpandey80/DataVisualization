@@ -39,7 +39,7 @@ export default function RegionStackedBar() {
     if (!displayData.length || !width || !height) return;
 
     const chartHeight = Math.max(96, Math.min(120, height * 0.42));
-    const margin = { top: 20, right: 14, bottom: 16, left: 14 };
+    const margin = { top: 20, right: 20, bottom: 20, left: 20 };
     const innerWidth = width - margin.left - margin.right;
 
     const svg = d3.select(svgRef.current);
@@ -154,7 +154,7 @@ export default function RegionStackedBar() {
           style={{ opacity: 0 }}
         />
 
-        <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
+        <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
           {displayData.map((item, index) => {
             const total = d3.sum(displayData, (d) => d.value) || 1;
             const percent = ((item.value / total) * 100).toFixed(1);
@@ -172,18 +172,18 @@ export default function RegionStackedBar() {
             return (
               <div
                 key={item.label}
-                className="flex items-center justify-between rounded-lg border border-white/10 bg-slate-900/50 px-3 py-2"
+                className="flex items-center justify-between rounded-lg border border-white/10 bg-slate-900/50 px-4 py-3"
               >
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 min-w-0">
                   <span
-                    className="h-2.5 w-2.5 rounded-full"
+                    className="h-2.5 w-2.5 rounded-full shrink-0"
                     style={{ backgroundColor: colors[index % colors.length] }}
                   />
-                  <span className="max-w-30 truncate text-xs text-slate-200">
+                  <span className="truncate text-xs text-slate-200">
                     {item.label}
                   </span>
                 </div>
-                <span className="text-xs font-semibold text-cyan-300">
+                <span className="ml-2 text-xs font-semibold text-cyan-300 shrink-0">
                   {item.value} ({percent}%)
                 </span>
               </div>
