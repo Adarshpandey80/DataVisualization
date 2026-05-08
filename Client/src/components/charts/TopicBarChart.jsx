@@ -2,37 +2,39 @@ import { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
 import axios from "axios";
 import ChartCard from "../../layout/ChartCard";
+import ChartModal from "../common/ChartModel";
+import { ArrowsPointingOutIcon } from "@heroicons/react/24/outline";
 
 const api = `${import.meta.env.VITE_BACKEND_URL}/data/topic-distribution`;
 
 export default function TopicBarChart() {
   const ref = useRef();
+  const modalRef = useRef();
   const [data, setData] = useState([]);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     axios.get(api).then(res => setData(res.data));
   }, []);
 
-  useEffect(() => {
-    if (!data.length) return;
+  const draw = (svgRef, w, h) => {
+    if (!svgRef || !data.length) return;
 
-    const width = 900;
-    const height = 360;
     const margin = { top: 20, right: 30, bottom: 30, left: 160 };
 
-    const svg = d3.select(ref.current);
+    const svg = d3.select(svgRef);
     svg.selectAll("*").remove();
-    svg.attr("viewBox", `0 0 ${width} ${height}`);
+    svg.attr("width", w).attr("height", h);
 
     const y = d3.scaleBand()
       .domain(data.map(d => d.label))
-      .range([margin.top, height - margin.bottom])
+      .range([margin.top, h - margin.bottom])
       .padding(0.25);
 
     const x = d3.scaleLinear()
       .domain([0, d3.max(data, d => d.value)])
       .nice()
-      .range([margin.left, width - margin.right]);
+      .range([margin.left, w - margin.right]);
 
     svg.append("g")
       .selectAll("rect")
@@ -50,20 +52,48 @@ export default function TopicBarChart() {
       .attr("width", d => x(d.value) - margin.left);
 
     svg.append("g")
-      .attr("transform", `translate(0,${height - margin.bottom})`)
+      .attr("transform", `translate(0,${h - margin.bottom})`)
       .call(d3.axisBottom(x));
 
     svg.append("g")
       .attr("transform", `translate(${margin.left},0)`)
       .call(d3.axisLeft(y));
+  };
 
+  useEffect(() => {
+    if (!data.length) return;
+    draw(ref.current, 900, 360);
   }, [data]);
 
+  useEffect(() => {
+    if (open && modalRef.current) {
+      const svg = d3.select(modalRef.current).select("svg");
+      const rect = modalRef.current.getBoundingClientRect();
+      draw(svg.node(), rect.width, rect.height - 40);
+    }
+  }, [open, data]);
+
   return (
-    <ChartCard title="📌 Topic Distribution (Horizontal Bar)">
-      <div className="w-full h-full overflow-hidden">
-        <svg ref={ref} className="w-full h-full max-w-full block" />
-      </div>
-    </ChartCard>
+    <>
+      <ChartCard 
+        title="📌 Topic Distribution (Horizontal Bar)"
+        action={
+          <ArrowsPointingOutIcon 
+            onClick={() => setOpen(true)}
+            className="w-5 h-5 cursor-pointer hover:text-cyan-400" 
+          />
+        }
+      >
+        <div className="w-full h-full overflow-hidden">
+          <svg ref={ref} className="w-full h-full max-w-full block" />
+        </div>
+      </ChartCard>
+
+      <ChartModal open={open} onClose={() => setOpen(false)}>
+        <div ref={modalRef} className="w-full h-full">
+          <svg className="w-full h-full max-w-full block" />
+        </div>
+      </ChartModal>
+    </>
   );
 }

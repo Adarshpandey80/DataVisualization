@@ -2,28 +2,33 @@ import { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
 import axios from "axios";
 import ChartCard from "../../layout/ChartCard";
+import ChartModal from "../common/ChartModel";
+import { ArrowsPointingOutIcon } from "@heroicons/react/24/outline";
 
 const api = `${import.meta.env.VITE_BACKEND_URL}/data/topic-distribution`;
 
 export default function TopicTrendChart() {
   const ref = useRef();
+  const modalRef = useRef();
   const tooltipRef = useRef();
+  const modalTooltipRef = useRef();
   const [data, setData] = useState([]);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     axios.get(api).then(res => setData(res.data));
   }, []);
 
-  useEffect(() => {
-    if (!data.length) return;
+  const draw = (svgRef, tooltipNode, w, h) => {
+    if (!svgRef || !data.length) return;
 
-    const width = 900;
-    const height = 360;
+    const width = w || 900;
+    const height = h || 360;
     const margin = { top: 20, right: 30, bottom: 40, left: 40 };
 
-    const svg = d3.select(ref.current);
+    const svg = d3.select(svgRef);
     svg.selectAll("*").remove();
-    svg.attr("viewBox", `0 0 ${width} ${height}`);
+    svg.attr("width", width).attr("height", height);
 
     const x = d3.scalePoint()
       .domain(data.map(d => d.label))
@@ -41,7 +46,7 @@ export default function TopicTrendChart() {
 
     // Glow effect
     const defs = svg.append("defs");
-    const filter = defs.append("filter").attr("id", "glow");
+    const filter = defs.append("filter").attr("id", `glow-${Math.random()}`);
     filter.append("feGaussianBlur")
       .attr("stdDeviation", 4)
       .attr("result", "blur");
@@ -55,7 +60,7 @@ export default function TopicTrendChart() {
       .attr("fill", "none")
       .attr("stroke", "#6366f1")
       .attr("stroke-width", 4)
-      .attr("filter", "url(#glow)")
+      .attr("filter", `url(#glow-${Math.random()})`)
       .attr("d", line);
 
     // Animation
@@ -104,7 +109,7 @@ export default function TopicTrendChart() {
       .attr("stroke-width", 2)
       .style("opacity", 0);
 
-    const tooltip = d3.select(tooltipRef.current);
+    const tooltip = d3.select(tooltipNode);
 
     overlay
       .on("mousemove", (event) => {
@@ -138,21 +143,56 @@ export default function TopicTrendChart() {
         focusDot.style("opacity", 0);
         tooltip.style("opacity", 0);
       });
+  };
 
+  useEffect(() => {
+    if (!data.length) return;
+    draw(ref.current, tooltipRef.current);
   }, [data]);
 
-  return (
-    <ChartCard title="📈 Topic Trend Analytics (Interactive)">
-      <div className="relative w-full h-full overflow-hidden">
-        <svg ref={ref} className="w-full h-full max-w-full block" />
+  useEffect(() => {
+    if (open && modalRef.current) {
+      const svg = d3.select(modalRef.current).select("svg");
+      const rect = modalRef.current.getBoundingClientRect();
+      draw(svg.node(), modalTooltipRef.current, rect.width, rect.height - 40);
+    }
+  }, [open, data]);
 
-        {/* Tooltip */}
-        <div
-          ref={tooltipRef}
-          className="absolute pointer-events-none bg-slate-900/90 text-white text-xs px-3 py-2 rounded-lg shadow-xl border border-cyan-400 transition"
-          style={{ opacity: 0 }}
-        />
-      </div>
-    </ChartCard>
+  return (
+    <>
+      <ChartCard 
+        title="📈 Topic Trend Analytics (Interactive)"
+        action={
+          <ArrowsPointingOutIcon 
+            onClick={() => setOpen(true)}
+            className="w-5 h-5 cursor-pointer hover:text-cyan-400" 
+          />
+        }
+      >
+        <div className="relative w-full h-full overflow-hidden">
+          <svg ref={ref} className="w-full h-full max-w-full block" />
+
+          {/* Tooltip */}
+          <div
+            ref={tooltipRef}
+            className="absolute pointer-events-none bg-slate-900/90 text-white text-xs px-3 py-2 rounded-lg shadow-xl border border-cyan-400 transition"
+            style={{ opacity: 0 }}
+          />
+        </div>
+      </ChartCard>
+
+      <ChartModal open={open} onClose={() => setOpen(false)}>
+        <div ref={modalRef} className="w-full h-full relative overflow-hidden">
+          <svg className="w-full h-full max-w-full block" />
+
+          {/* Tooltip */}
+          <div
+            ref={modalTooltipRef}
+            className="absolute pointer-events-none bg-slate-900/90 text-white text-xs px-3 py-2 rounded-lg shadow-xl border border-cyan-400 transition"
+            style={{ opacity: 0 }}
+          />
+        </div>
+      </ChartModal>
+    </>
   );
 }
