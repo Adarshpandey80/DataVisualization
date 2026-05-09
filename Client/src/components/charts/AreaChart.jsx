@@ -34,10 +34,25 @@ export default function AreaChart() {
   }, [width, height, data]);
 
   useEffect(() => {
-    if (modalSize.width && open) {
+    if (modalSize.width && modalSize.height && open) {
       draw(modalRef, modalSize.width, modalSize.height - 40);
     }
   }, [modalSize, open]);
+
+  // Force redraw when modal opens
+  useEffect(() => {
+    if (open && data.length) {
+      const timer = setTimeout(() => {
+        if (modalRef.current) {
+          const rect = modalRef.current.getBoundingClientRect();
+          if (rect.width > 0 && rect.height > 0) {
+            draw(modalRef, rect.width, rect.height - 40);
+          }
+        }
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [open]);
 
   const draw = (ref, w, h) => {
     const margin = { top: 40, right: 40, bottom: 50, left: 60 };

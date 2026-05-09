@@ -33,6 +33,21 @@ export default function LineChart() {
       draw(modalRef, modalSize.width, modalSize.height - 50);
   }, [modalSize, open]);
 
+  // Force redraw when modal opens
+  useEffect(() => {
+    if (open && data.length) {
+      const timer = setTimeout(() => {
+        if (modalRef.current) {
+          const rect = modalRef.current.getBoundingClientRect();
+          if (rect.width > 0 && rect.height > 0) {
+            draw(modalRef, rect.width, rect.height - 50);
+          }
+        }
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [open]);
+
   const draw = (ref, w, h) => {
     const margin = { top: 18, right: 24, bottom: 42, left: 54 };
     const svg = d3.select(ref.current).select("svg")

@@ -163,6 +163,21 @@ export default function RegionStackedBar() {
     }
   }, [open, displayData, modalSize]);
 
+  // Force redraw when modal opens
+  useEffect(() => {
+    if (open && displayData.length) {
+      const timer = setTimeout(() => {
+        if (modalRef.current && modalSvgRef.current) {
+          const rect = modalRef.current.getBoundingClientRect();
+          if (rect.width > 0 && rect.height > 0) {
+            draw(modalSvgRef.current, modalTooltipRef.current, rect.width, rect.height, modalRef.current);
+          }
+        }
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [open]);
+
   return (
     <>
       <ChartCard 

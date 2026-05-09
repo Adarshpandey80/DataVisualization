@@ -32,6 +32,21 @@ export default function RadarChart() {
       draw(modalRef, modalSize.width, modalSize.height - 60);
   }, [modalSize, open]);
 
+  // Force redraw when modal opens
+  useEffect(() => {
+    if (open && data.length) {
+      const timer = setTimeout(() => {
+        if (modalRef.current) {
+          const rect = modalRef.current.getBoundingClientRect();
+          if (rect.width > 0 && rect.height > 0) {
+            draw(modalRef, rect.width, rect.height - 60);
+          }
+        }
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [open]);
+
   const draw = (ref, w, h) => {
     const svg = d3.select(ref.current).select("svg")
       .attr("width", w)
