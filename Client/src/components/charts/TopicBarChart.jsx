@@ -85,13 +85,13 @@ export default function TopicBarChart() {
         }
       >
         <div className="w-full h-full overflow-hidden">
-          <svg ref={ref} className="w-full h-full max-w-full block" />
+          <svg ref={ref} className="w-full h-full max-w-full block" style={{ display: 'block' }} />
         </div>
       </ChartCard>
 
       <ChartModal open={open} onClose={() => setOpen(false)}>
-        <div ref={modalRef} className="w-full h-full">
-          <svg className="w-full h-full max-w-full block" />
+        <div ref={modalRef} className="w-full h-full overflow-hidden">
+          <svg className="w-full h-full max-w-full block" style={{ display: 'block' }} />
         </div>
       </ChartModal>
     </>

@@ -158,13 +158,13 @@ export default function AreaChart() {
         }
       >
         <div ref={containerRef} className="w-full h-full overflow-hidden">
-          <svg className="w-full h-full max-w-full block" />
+          <svg className="w-full h-full max-w-full block" style={{ display: 'block' }} />
         </div>
       </ChartCard>
 
       <ChartModal open={open} onClose={() => setOpen(false)}>
-        <div ref={modalRef} className="w-full h-full">
-          <svg className="w-full h-full" />
+        <div ref={modalRef} className="w-full h-full overflow-hidden">
+          <svg className="w-full h-full" style={{ display: 'block', minHeight: '400px' }} />
         </div>
       </ChartModal>
     </>

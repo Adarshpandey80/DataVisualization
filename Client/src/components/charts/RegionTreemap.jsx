@@ -170,7 +170,7 @@ export default function TopicTrendChart() {
         }
       >
         <div className="relative w-full h-full overflow-hidden">
-          <svg ref={ref} className="w-full h-full max-w-full block" />
+          <svg ref={ref} className="w-full h-full max-w-full block" style={{ display: 'block' }} />
 
           {/* Tooltip */}
           <div
@@ -183,7 +183,7 @@ export default function TopicTrendChart() {
 
       <ChartModal open={open} onClose={() => setOpen(false)}>
         <div ref={modalRef} className="w-full h-full relative overflow-hidden">
-          <svg className="w-full h-full max-w-full block" />
+          <svg className="w-full h-full max-w-full block" style={{ display: 'block' }} />
 
           {/* Tooltip */}
           <div

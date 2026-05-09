@@ -175,7 +175,7 @@ export default function RegionStackedBar() {
         }
       >
         <div ref={containerRef} className="relative h-full w-full overflow-hidden">
-          <svg ref={svgRef} className="w-full max-w-full" />
+          <svg ref={svgRef} className="w-full max-w-full block" style={{ display: 'block' }} />
 
           <div
             ref={tooltipRef}
@@ -223,9 +223,9 @@ export default function RegionStackedBar() {
       </ChartCard>
 
       <ChartModal open={open} onClose={() => setOpen(false)}>
-        <div ref={modalRef} className="w-full h-full flex flex-col">
+        <div ref={modalRef} className="w-full h-full flex flex-col overflow-hidden">
           <div className="flex-1 overflow-hidden">
-            <svg ref={modalSvgRef} className="w-full max-w-full" />
+            <svg ref={modalSvgRef} className="w-full max-w-full block" style={{ display: 'block' }} />
 
             <div
               ref={modalTooltipRef}

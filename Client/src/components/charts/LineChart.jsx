@@ -122,13 +122,13 @@ export default function LineChart() {
           className="w-5 h-5 cursor-pointer hover:text-cyan-400" />
       }>
         <div ref={containerRef} className="w-full h-full relative overflow-hidden">
-          <svg className="w-full h-full max-w-full block" />
+          <svg className="w-full h-full max-w-full block" style={{ display: 'block' }} />
         </div>
       </ChartCard>
 
       <ChartModal open={open} onClose={() => setOpen(false)}>
-        <div ref={modalRef} className="w-full h-[80vh]">
-          <svg className="w-full h-full" />
+        <div ref={modalRef} className="w-full h-full overflow-hidden">
+          <svg className="w-full h-full" style={{ display: 'block', minHeight: '400px' }} />
         </div>
       </ChartModal>
     </>
