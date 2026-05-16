@@ -7,7 +7,14 @@ import { usePreferences } from "./context/PreferencesContext";
 
 function Layout() {
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [selectedChart, setSelectedChart] = useState(null);
   const { settings } = usePreferences();
+
+  const handleChartSearch = (chart) => {
+    setSelectedChart(chart);
+    // Clear after a moment to avoid re-rendering issues
+    setTimeout(() => setSelectedChart(null), 100);
+  };
 
   return (
     <div className="min-h-screen app-shell text-slate-100">
@@ -20,14 +27,17 @@ function Layout() {
         />
 
         <div className="flex min-h-screen flex-1 flex-col overflow-hidden">
-          <Navbar onMenuClick={() => setMobileSidebarOpen((prev) => !prev)} />
+          <Navbar 
+            onMenuClick={() => setMobileSidebarOpen((prev) => !prev)}
+            onChartSearch={handleChartSearch}
+          />
 
           <main
             className={`flex-1 overflow-auto ${
               settings.compactMode ? "px-3 py-3 md:px-4" : "px-4 py-4 md:px-6"
             }`}
           >
-            <Outlet />
+            <Outlet context={{ selectedChart }} />
           </main>
 
           <Footer />

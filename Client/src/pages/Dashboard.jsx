@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useRef, useEffect } from "react";
+import { useOutletContext } from "react-router-dom";
 
 import LineChart from "../components/charts/LineChart";
 import BarChart from "../components/charts/BarChart";
@@ -57,9 +58,12 @@ const chartRegistry = [
 
 export default function Dashboard() {
   const { settings } = usePreferences();
+  const { selectedChart } = useOutletContext() || {};
   const [visible, setVisible] = useState(() =>
     chartRegistry.reduce((acc, chart) => ({ ...acc, [chart.id]: true }), {})
   );
+  const [highlightedChart, setHighlightedChart] = useState(null);
+  const chartRefs = useRef({});
 
   const activeCharts = useMemo(
     () => chartRegistry.filter((chart) => visible[chart.id]),
@@ -73,6 +77,30 @@ export default function Dashboard() {
   const resetCharts = () => {
     setVisible(chartRegistry.reduce((acc, chart) => ({ ...acc, [chart.id]: true }), {}));
   };
+
+  // Handle chart selection from search
+  useEffect(() => {
+    if (selectedChart) {
+      const chartId = selectedChart.id;
+      
+      // Show the chart if it's hidden
+      setVisible((prev) => ({ ...prev, [chartId]: true }));
+      
+      // Set highlight
+      setHighlightedChart(chartId);
+      
+      // Scroll to the chart
+      setTimeout(() => {
+        const element = chartRefs.current[chartId];
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      }, 100);
+      
+      // Remove highlight after 3 seconds
+      setTimeout(() => setHighlightedChart(null), 3000);
+    }
+  }, [selectedChart]);
 
   return (
     <div className="space-y-5">
@@ -118,7 +146,17 @@ export default function Dashboard() {
       >
         {activeCharts.length ? (
           activeCharts.map(({ id, className, Component }) => (
-            <div key={id} className={className}>
+            <div
+              key={id}
+              ref={(el) => {
+                if (el) chartRefs.current[id] = el;
+              }}
+              className={`${className} transition-all duration-300 ${
+                highlightedChart === id
+                  ? "ring-2 ring-cyan-400 rounded-xl"
+                  : ""
+              }`}
+            >
               <Component />
             </div>
           ))
