@@ -6,7 +6,7 @@ const Footer = () => {
         <div>
           © {new Date().getFullYear()}{" "}
           <span className="font-semibold text-slate-100">
-            Blackcoffer Analytics
+            Data visualization Analytics
           </span>
         </div>
 

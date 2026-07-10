@@ -122,7 +122,7 @@ const Navbar = ({ onMenuClick, onChartSearch }) => {
 
           <div>
             <p className="text-sm tracking-[0.18em] text-cyan-300/80 uppercase">
-              Blackcoffer
+             Data visualization
             </p>
             <h1 className="text-lg font-semibold text-slate-100">{pageTitle}</h1>
           </div>
