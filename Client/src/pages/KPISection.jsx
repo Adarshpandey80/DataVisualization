@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { motion } from "framer-motion";
 import { usePreferences } from "../context/PreferencesContext";
 
 const api = `${import.meta.env.VITE_BACKEND_URL}/data/kpi`;
@@ -63,17 +62,15 @@ export default function KPISection() {
   return (
     <div className="mb-0 grid grid-cols-2 gap-5 md:grid-cols-3 xl:grid-cols-6">
       {cards.map((c, i) => (
-        <motion.div
+        <div
           key={i}
-          initial={{ opacity: 0, y: 30, scale: 0.9 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ delay: i * 0.1, duration: 0.6 }}
-          whileHover={settings.animations ? { scale: 1.06 } : undefined}
-          className="relative rounded-xl border border-white/10 bg-slate-900 p-4 shadow-xl hover:shadow-[0_25px_60px_rgba(56,189,248,0.45)]"
+          className={`relative min-h-23 rounded-xl border border-white/10 bg-slate-900 p-4 shadow-xl ${
+            settings.animations ? "kpi-card-enter hover:-translate-y-1" : ""
+          }`}
         >
           <p className="text-xs text-gray-400 tracking-wide">{c.title}</p>
           <h2 className="text-2xl font-bold mt-1 text-cyan-300">{c.value}</h2>
-        </motion.div>
+        </div>
       ))}
     </div>
   );

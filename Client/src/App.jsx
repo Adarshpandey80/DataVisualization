@@ -1,10 +1,12 @@
+import { lazy, Suspense } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Layout from "./Layout";
-import Dashboard from "./pages/Dashboard";
 import Home from "./pages/Home";
-import Settings from "./pages/Settings";
-import NotFound from "./pages/NotFound";
 import { PreferencesProvider } from "./context/PreferencesContext";
+
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const Settings = lazy(() => import("./pages/Settings"));
+const NotFound = lazy(() => import("./pages/NotFound"));
 
 const SETTINGS_KEY = "bc_settings";
 
@@ -27,14 +29,39 @@ function App() {
           <Route path="/" element={<Layout />}>
             <Route index element={<Navigate to={landingPage} replace />} />
             <Route path="home" element={<Home />} />
-            <Route path="charts" element={<Dashboard />} />
-            <Route path="settings" element={<Settings />} />
-            <Route path="*" element={<NotFound />} />
+            <Route
+              path="charts"
+              element={
+                <Suspense fallback={<PageFallback />}>
+                  <Dashboard />
+                </Suspense>
+              }
+            />
+            <Route
+              path="settings"
+              element={
+                <Suspense fallback={<PageFallback />}>
+                  <Settings />
+                </Suspense>
+              }
+            />
+            <Route
+              path="*"
+              element={
+                <Suspense fallback={<PageFallback />}>
+                  <NotFound />
+                </Suspense>
+              }
+            />
           </Route>
         </Routes>
       </BrowserRouter>
     </PreferencesProvider>
   );
+}
+
+function PageFallback() {
+  return <div className="min-h-105 animate-pulse rounded-2xl bg-slate-900/60" aria-busy="true" />;
 }
 
 export default App;

@@ -1,8 +1,10 @@
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Settings2, Sparkles } from "lucide-react";
 import KPISection from "./KPISection";
-import LineChart from "../components/charts/LineChart";
-import TopicBarChart from "../components/charts/TopicBarChart";
+
+const LineChart = lazy(() => import("../components/charts/LineChart"));
+const TopicBarChart = lazy(() => import("../components/charts/TopicBarChart"));
 
 const highlights = [
   {
@@ -21,6 +23,58 @@ const highlights = [
     detail: "Improvement from last reporting cycle.",
   },
 ];
+
+function DeferredCharts() {
+  const sectionRef = useRef(null);
+  const [shouldRender, setShouldRender] = useState(false);
+
+  useEffect(() => {
+    if (!sectionRef.current || shouldRender) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShouldRender(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "240px 0px" },
+    );
+
+    observer.observe(sectionRef.current);
+    return () => observer.disconnect();
+  }, [shouldRender]);
+
+  return (
+    <section
+      ref={sectionRef}
+      className="grid min-h-105 grid-cols-1 gap-5 xl:grid-cols-2"
+      aria-label="Dashboard charts"
+    >
+      {shouldRender ? (
+        <Suspense fallback={<ChartPlaceholder />}>
+          <div className="h-105">
+            <LineChart />
+          </div>
+          <div className="h-105">
+            <TopicBarChart />
+          </div>
+        </Suspense>
+      ) : (
+        <ChartPlaceholder />
+      )}
+    </section>
+  );
+}
+
+function ChartPlaceholder() {
+  return (
+    <>
+      <div className="h-105 animate-pulse rounded-2xl border border-white/10 bg-slate-900/60" />
+      <div className="h-105 animate-pulse rounded-2xl border border-white/10 bg-slate-900/60" />
+    </>
+  );
+}
 
 export default function Home() {
   return (
@@ -75,14 +129,7 @@ export default function Home() {
         ))}
       </section>
 
-      <section className="grid grid-cols-1 gap-5 xl:grid-cols-2">
-        <div className="h-105">
-          <LineChart />
-        </div>
-        <div className="h-105">
-          <TopicBarChart />
-        </div>
-      </section>
+      <DeferredCharts />
     </div>
   );
 }
